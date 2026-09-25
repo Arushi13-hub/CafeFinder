@@ -1,0 +1,430 @@
+@import 'leaflet/dist/leaflet.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+    --color-harbor: #0A2947;
+    --color-linen: #F3E4C9;
+    --color-sage: #D3D4C0;
+    --color-amber: #8B5E3C;
+  }
+
+  body {
+    background-color: #FAF7EE;
+    color: #0A2947;
+    font-family: 'Plus Jakarta Sans', Inter, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* ========================================================================= */
+/* DRIBBLE BOUTIQUE WARM CREAM CARD SURFACES                                 */
+/* ========================================================================= */
+
+.card-boutique-cream {
+  background-color: #F3E4C9;
+  color: #0A2947;
+  border: 1px solid rgba(211, 212, 192, 0.7);
+  border-radius: 1.5rem;
+  box-shadow: 0 16px 36px -8px rgba(10, 41, 71, 0.16);
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .card-boutique-cream:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 45px -10px rgba(10, 41, 71, 0.25);
+    border-color: #8B5E3C;
+  }
+}
+
+.card-boutique-cream:active {
+  transform: scale(0.98);
+}
+
+/* Dark variant when used on dark sections */
+.card-harbor {
+  background-color: #0d3257;
+  color: #F3E4C9;
+  border: 1px solid rgba(211, 212, 192, 0.2);
+  border-radius: 1.5rem;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+              box-shadow 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .card-harbor:hover {
+    transform: translateY(-4px);
+    border-color: rgba(243, 228, 201, 0.4);
+    box-shadow: 0 20px 40px -8px rgba(2, 10, 20, 0.75);
+  }
+}
+
+/* ========================================================================= */
+/* LEAFLET CUSTOM MARKERS & PULSE BEACONS                                    */
+/* ========================================================================= */
+
+/* Leaflet Map Muted Editorial Filter */
+#map .leaflet-tile-pane,
+.leaflet-map-muted .leaflet-tile-pane {
+  filter: saturate(0.85) contrast(1.05) brightness(0.98);
+}
+
+.custom-cafe-marker-wrapper {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-custom-pin {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #8B5E3C;
+  color: #FFFFFF;
+  border: 2px solid #FAF7EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(10, 41, 71, 0.28);
+  transition: all 250ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+}
+
+.leaflet-custom-pin:hover {
+  transform: scale(1.15);
+  background: #724c30;
+  border-color: #FFFFFF;
+}
+
+.leaflet-custom-pin.is-active {
+  background: #8B5E3C !important;
+  border-color: #FAF7EE !important;
+  color: #FFFFFF !important;
+  width: 38px;
+  height: 38px;
+  transform: scale(1.22);
+  box-shadow: 0 0 22px 5px rgba(139, 94, 60, 0.65), 0 8px 18px rgba(10, 41, 71, 0.35);
+  z-index: 1000 !important;
+}
+
+.pin-active-beacon {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #8B5E3C;
+  animation: beaconPulse 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes beaconPulse {
+  0% { transform: scale(0.7); opacity: 0.95; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* User GPS Marker: Pulsing blue/slate circle in #0A2947 */
+.user-pin-wrapper {
+  background: transparent !important;
+  border: none !important;
+}
+
+.user-pulse-marker {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #0A2947;
+  border: 2.5px solid #FAF7EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 16px rgba(10, 41, 71, 0.5);
+}
+
+.user-center-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FAF7EE;
+}
+
+.user-pulse-marker::after {
+  content: '';
+  position: absolute;
+  inset: -9px;
+  border-radius: 50%;
+  border: 2px solid #0A2947;
+  animation: userRadiusPulse 2.4s ease-out infinite;
+}
+
+@keyframes userRadiusPulse {
+  0% { transform: scale(0.5); opacity: 0.9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* ========================================================================= */
+/* PAGE ENTRANCE & HERO REVEAL (CUBIC-BEZIER STAGGER)                        */
+/* ========================================================================= */
+
+@keyframes heroCascade {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-stagger-1 { animation: heroCascade 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both; }
+.hero-stagger-2 { animation: heroCascade 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) 0.16s both; }
+.hero-stagger-3 { animation: heroCascade 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) 0.28s both; }
+.hero-stagger-4 { animation: heroCascade 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) 0.40s both; }
+
+/* ========================================================================= */
+/* FLUID STAGGERED CARD ENTRANCE                                             */
+/* ========================================================================= */
+
+@keyframes cardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-cascade-enter {
+  animation: cardSlideIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* ========================================================================= */
+/* ACOUSTIC SOUNDWAVE / RADAR SCANNER ANIMATIONS                             */
+/* ========================================================================= */
+
+@keyframes soundwavePulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.85;
+    border-color: #F3E4C9;
+  }
+  50% {
+    opacity: 0.4;
+    border-color: #8B5E3C;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+    border-color: rgba(243, 228, 201, 0);
+  }
+}
+
+.animate-soundwave-1 { animation: soundwavePulse 2.6s cubic-bezier(0.2, 0.8, 0.2, 1) infinite; }
+.animate-soundwave-2 { animation: soundwavePulse 2.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.85s infinite; }
+.animate-soundwave-3 { animation: soundwavePulse 2.6s cubic-bezier(0.2, 0.8, 0.2, 1) 1.7s infinite; }
+
+@keyframes waveformBar {
+  0%, 100% {
+    height: 18%;
+  }
+  50% {
+    height: 95%;
+  }
+}
+
+.animate-waveform-bar {
+  animation: waveformBar 1.2s ease-in-out infinite;
+}
+
+/* ========================================================================= */
+/* MICRO-POP EXPLOSIVE BOUNCE FOR FAVORITE BUTTON                            */
+/* ========================================================================= */
+
+@keyframes popBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  75% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.animate-pop {
+  animation: popBounce 0.38s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+/* ========================================================================= */
+/* ROULETTE HALO PULSE AROUND WINNING CARD                                   */
+/* ========================================================================= */
+
+@keyframes haloPulse {
+  0%, 100% {
+    box-shadow: 0 0 25px 2px rgba(139, 94, 60, 0.4), 0 0 0 1px rgba(243, 228, 201, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 50px 10px rgba(139, 94, 60, 0.7), 0 0 0 2px rgba(243, 228, 201, 0.9);
+  }
+}
+
+.roulette-halo-pulse {
+  animation: haloPulse 2.4s ease-in-out infinite;
+}
+
+/* ========================================================================= */
+/* MODAL DISSOLVE & SLIDE SHEET (6px BLUR DISSOLVE)                          */
+/* ========================================================================= */
+
+@keyframes modalSheetEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.modal-sheet-enter {
+  animation: modalSheetEnter 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* ========================================================================= */
+/* SKELETAL SHIMMER PLACEHOLDERS                                             */
+/* ========================================================================= */
+
+@keyframes skeletonPulse {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(211, 212, 192, 0.08) 25%,
+    rgba(243, 228, 201, 0.25) 50%,
+    rgba(211, 212, 192, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.8s ease-in-out infinite;
+}
+
+/* ========================================================================= */
+/* UTILITIES & TOUCH ERGONOMICS                                              */
+/* ========================================================================= */
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}
+
+.pt-safe {
+  padding-top: max(1rem, env(safe-area-inset-top, 1rem));
+}
+
+/* ========================================================================= */
+/* PERFORMANCE & BREWING LOADING ANIMATIONS                                  */
+/* ========================================================================= */
+
+@keyframes indeterminateBar {
+  0% { transform: translateX(-100%); width: 40%; }
+  50% { transform: translateX(50%); width: 60%; }
+  100% { transform: translateX(250%); width: 40%; }
+}
+
+.animate-indeterminate-bar {
+  animation: indeterminateBar 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes steamRise {
+  0% {
+    transform: translateY(0) scaleX(1);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(-16px) scaleX(1.35);
+    opacity: 0;
+  }
+}
+
+.animate-steam-1 {
+  animation: steamRise 1.8s ease-out infinite;
+}
+
+.animate-steam-2 {
+  animation: steamRise 1.8s ease-out 0.6s infinite;
+}
+
+.animate-steam-3 {
+  animation: steamRise 1.8s ease-out 1.2s infinite;
+}
+
+@keyframes coffeeDrip {
+  0% {
+    transform: translateY(-6px) scale(0.8);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(14px) scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.4);
+  }
+}
+
+.animate-coffee-drip {
+  animation: coffeeDrip 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes fadeInFast {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeInFast 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
